@@ -118,63 +118,7 @@ class TournamentDB():
         print result
         return result
 
-
-
-    @property
-    def swissPairings(self):
-
-        # Returns a list of temp_pairs of players for the next round of a match.
-
-        """Assuming that there are an even number of players registered, each player
-        appears exactly once in the pairings.  Each player is paired with another
-        player with an equal or nearly-equal win record, that is, a player adjacent
-        to him or her in the standings.
-
-        Returns:
-          A list of tuples, each of which contains (id1, name1, id2, name2)
-            id1: the first player's unique id
-            name1: the first player's name
-            id2: the second player's unique id
-            name2: the second player's name"""
-        self.round = self.round + 1
-        testpair = self.validpair()
-        possiblepair = []
-
-        standings = self.playerStandings()
-
-        self.output_pairs = []
-        #look up race condition
-        temp_pairs = []
-        for j in range(0, len(testpair)):
-            p1test=testpair[j]
-            p1place=testpair[0]
-            p2place=testpair[1]
-
-            if p1place > p2place :
-                possiblepair.append((p2place, p1place))
-            else:
-                possiblepair.append((p1place, p2place))
-
-
-        while len(standings) > 0:
-            player1 = standings.pop(0)
-            player1_id = player1[0]
-            player1_name = player1[1]
-            for player in standings :
-
-              
-
-
-                for i in range(1, len(standings)):
-                    player2_id = player2[0]
-                    player2_name = player2[1]
-                    #tuple=immutable object that can't be changed, pop takes something out
-                    pairing_tuple = (player1_id, player1_name, player2_id, player2_name)
-
-            self.output_pairs.append(pairing_tuple)
-        return self.output_pairs
-
-        def get_previous_pairings(self):
+def get_previous_pairings(self):
             """Retrieves a set of player pairings from previous matches.
 
             A pairing indicates that the players have already played each
@@ -203,8 +147,8 @@ class TournamentDB():
 
             return pairings
 
-        @property
-        def swissPairings(self):
+@property
+def swissPairings(self):
             """Assuming that there are an even number of players registered, each player
             appears exactly once in the pairings.  Each player is paired with another
             player with an equal or nearly-equal win record, that is, a player adjacent
@@ -255,42 +199,4 @@ class TournamentDB():
 
 
 
-            #for statement using the player standings tuple and enumerating it
-        #rank = the playerid so no need to create an extra field
-        #using names because who cares if duplicates if you're just going through listtestpair = self.c.execute("select Winner, Loser from round")
-
-
-        #
-        # for row in standings:
-        #
-        #     # checks to see if there are only 2 players
-        #     #if len(standings) % 2 == 0:
-        #      #   self.output_pairs.append((standings[0], standings[1]))
-        #       #  break
-        #         #    temp_pairs.append(player[0])
-        #         #    temp_pairs.append(player[1])
-        #         #    output_pairs.append(tuple(temp_pairs))
-        #         # here's where pairs are made
-        #         # else:
-        #
-        #         # create list from matches table
-        #
-        #
-        #         # test to see if the pair is valid by seeing if the pair exists in the matches database
-        #
-        #
-        #
-        #
-        #         #   if(testpairs.count(tuple(temp_pairs)) == 0):
-        #     #else:
-        #        temp_pairs.append(standings[0])
-        #        temp_pairs.append(standings[1])
-        #        self.output_pairs.append({standings[0], standings[1]})
-        #        temp_pairs = []
-        #
-        # print self.output_pairs
-        # return self.output_pairs
-        #
-
-
-
+            
