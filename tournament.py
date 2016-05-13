@@ -199,4 +199,3 @@ def swissPairings(self):
 
 
 
-            
