@@ -108,92 +108,72 @@ class TournamentDB():
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
+        print "Winner", Winner
+        print "Loser", Loser
+        print
         self.c.execute("INSERT INTO round(Winner, Loser) VALUES (%s, %s)", (Winner, Loser,))
+
         self.Tdb.commit()
 
-    def validpair(self):
+    def get_previous_pairings(self):
         self.c.execute("select winner, loser from round")
 
         result = self.c.fetchall()
-        print result
-        return result
+        pairings = set()
 
-def get_previous_pairings(self):
-            """Retrieves a set of player pairings from previous matches.
-
-            A pairing indicates that the players have already played each
-            other.  Each player pairing is sorted by player id.
-
-            Returns:
-                A set of tuples where each tuple consists of two player
-                ids (in in ascending order) indicating that the players
-                have already played each other.
-            """
-
-            # get pairings from database
-            query = '''
-                SELECT
-                    r.winner AS player1_id,
-                    r.loser AS player2_id,
-                FROM round AS r
-            '''
-            self.c.execute(query)
-            results = self.c.fetchall()
-
-            # sort each pairing by player id
-            pairings = set()
-            for pairing in results:
-                pairings.add(sorted(pairing))
-
-            return pairings
-
-@property
-def swissPairings(self):
-            """Assuming that there are an even number of players registered, each player
-            appears exactly once in the pairings.  Each player is paired with another
-            player with an equal or nearly-equal win record, that is, a player adjacent
-            to him or her in the standings.
-
-            Returns:
-              A list of tuples, each of which contains (id1, name1, id2, name2)
-                id1: the first player's unique id
-                name1: the first player's name
-                id2: the second player's unique id
-                name2: the second player's name
-            """
-
-            self.round += 1
-            standings = self.playerStandings()
-            previous_pairings = self.get_previous_pairings()
-            next_match_pairings = []
-
-            # loop until there are no unmatched players left
-            while len(standings) > 0:
-
-                # find a valid pairing for the next match
-                player1 = standings.pop(0)
-                for potential_player2 in standings:
-
-                    # pair two players (that may or may not have played each other)
-                    if player1[0] < potential_player2[0]:
-                        possible_pairing = (player1[0], potential_player2[0])
-                    else:
-                        possible_pairing = (potential_player2[0], player1[0])
-
-                    # if they haven't played each other, stop looking
-                    if possible_pairing not in previous_pairings:
-                        player2 = potential_player2
-                        break
-
-                # next match = player1 id, player1 name, player2 id, player2 name
-                pairing = (player1[0], player1[1], player2[0], player2[1])
-                next_match_pairings.append(pairing)
-
-            return next_match_pairings
+        for pairing in result:
+            pairings.add(tuple(sorted(pairing)))
+        return pairings
 
 
+    @property
+    def swissPairings(self):
+
+        # Returns a list of temp_pairs of players for the next round of a match.
+
+        """Assuming that there are an even number of players registered, each player
+        appears exactly once in the pairings.  Each player is paired with another
+        player with an equal or nearly-equal win record, that is, a player adjacent
+        to him or her in the standings.
+
+        Returns:
+          A list of tuples, each of which contains (id1, name1, id2, name2)
+            id1: the first player's unique id
+            name1: the first player's name
+            id2: the second player's unique id
+            name2: the second player's name"""
+        self.round += 1
+        next_match_pairings = []
+        standings = self.playerStandings()
+        previous_pairings = self.get_previous_pairings()
 
 
+        #loop until no unmatched players
+        while len(standings) > 0:
+            #find a valid pairing starting with first player
+            player1 = standings.pop(0)
+
+            for potential_player2 in standings:
+
+                #pair two players (regardless of previous matches)
+                if player1[0] < potential_player2[0]:
+                    possible_pairing = (player1[0], potential_player2[0])
+                else:
+                    possible_pairing = (potential_player2[0], player1[0])
+
+                if possible_pairing not in previous_pairings:
+                    player2 = potential_player2
+                    standings.remove(player2)
+                    break
+
+            # next match = player1 id, player1 name, player2 id, player2 name
+            pairing = (player1[0], player1[1], player2[0], player2[1])
+            print player1
+            print player2
+            print
+            next_match_pairings.append(pairing)
+
+        return next_match_pairings
 
 
 
